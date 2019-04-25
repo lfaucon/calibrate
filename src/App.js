@@ -133,18 +133,19 @@ const MakeBet = ({ bets, addBet }) => {
 
   return (
     <div className="new-bet">
-      <span>Make a Bet</span>
       <textarea
         onChange={handleTitleChange}
         className="make-bet-textarea"
         value={title}
       />
-      <div>
-        <button onClick={handleClick(-1)}>-</button>
-        <span>{proba.toFixed(2)}</span>
-        <button onClick={handleClick(1)}>+</button>
+      <div className="probability-container">
+        <i className="fas fa-minus-square" onClick={handleClick(-1)} />
+        <span style={{ margin: "8px" }}>{proba.toFixed(2)}</span>
+        <i className="fas fa-plus-square" onClick={handleClick(1)} />
       </div>
-      <button onClick={submitBet}>Make Bet</button>
+      <span onClick={submitBet} className="make-bet-button">
+        Make Bet
+      </span>
     </div>
   );
 };
@@ -159,35 +160,14 @@ const Help = () => {
 
 const Stats = ({ bets }) => {
   const pastBets = bets.filter(b => b.outcome !== undefined);
-
   const doc = pastBets.reduce((acc, bet) => {
     acc[bet.proba] = acc[bet.proba] || [];
-
     acc[bet.proba].push(bet.outcome);
     return acc;
   }, {});
 
-  console.log(doc);
-
   return (
     <div>
-      {/* <div className="container stat-container">
-        <span className="stat-text">Current bets:</span>
-        <span className="stat-text">{currentBets.length}</span>
-      </div>
-      <div className="container stat-container">
-        <span className="stat-text">Past bets:</span>
-        <span className="stat-text">{pastBets.length}</span>
-      </div>
-      <div className="container stat-container">
-        <span className="stat-text">Successful bets:</span>
-        <span className="stat-text">{successfulBets.length}</span>
-      </div>
-      <div className="container stat-container">
-        <span className="stat-text">Failed bets:</span>
-        <span className="stat-text">{failedBets.length}</span>
-      </div> */}
-
       <table className="container stat-container">
         <tbody>
           <tr>
@@ -197,19 +177,16 @@ const Stats = ({ bets }) => {
           </tr>
           {Object.keys(doc)
             .sort()
-            .map(p => (
-              <tr key={p}>
-                <td>Bets at {100 * p}%</td>
-                <td>
-                  {(
-                    (100 * doc[p].filter(x => x).length) /
-                    doc[p].length
-                  ).toFixed(1)}
-                  %
-                </td>
-                <td>{doc[p].length}</td>
-              </tr>
-            ))}
+            .map(p => {
+              const _p = (100 * doc[p].filter(x => x).length) / doc[p].length;
+              return (
+                <tr key={p}>
+                  <td>{100 * p}%</td>
+                  <td>{_p.toFixed(1)}%</td>
+                  <td>{doc[p].length}</td>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
     </div>
